@@ -9,7 +9,7 @@ pygame.init()
 # Set up the display
 width, height = 800, 600
 screen = pygame.display.set_mode((width, height))
-pygame.display.set_caption("Multiple Waving Circles")
+pygame.display.set_caption("Multiple Waving Circles with Particles")
 
 # Set up the colors
 bg_color = (42, 40, 38)
@@ -24,9 +24,10 @@ t = 0
 
 # Set up the particle parameters
 particle_radius = 2
-particle_speed = 1
-particles_per_frame = 2
+particles_per_frame = 1
 max_distance = math.hypot(width // 2, height // 2)
+min_particle_speed = 0.5  # Minimum speed of particles
+max_particle_speed = 2.0  # Maximum speed of particles
 
 # Set up the invisible circle parameters
 invisible_circle_radius = R + 20
@@ -42,13 +43,14 @@ def create_particle():
     distance_from_edge = random.uniform(-circle_edge_distance_variation, circle_edge_distance_variation)
     x = circle_center[0] + (invisible_circle_radius + distance_from_edge) * dx
     y = circle_center[1] + (invisible_circle_radius + distance_from_edge) * dy
+    particle_speed = random.uniform(min_particle_speed, max_particle_speed)
     life = random.uniform(max_distance / 2, max_distance) / particle_speed
-    particles.append([x, y, dx, dy, 1.0, life, life])
+    particles.append([x, y, dx, dy, 1.0, life, life, particle_speed])
 
 def draw_particles():
     for particle in particles[:]:
-        particle[0] += particle[2] * particle_speed
-        particle[1] += particle[3] * particle_speed
+        particle[0] += particle[2] * particle[7]
+        particle[1] += particle[3] * particle[7]
         particle[5] -= 1
         if particle[5] > 0:
             particle[4] = particle[5] / particle[6]
