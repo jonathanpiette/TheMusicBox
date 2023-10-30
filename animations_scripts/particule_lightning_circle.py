@@ -7,32 +7,32 @@ import random
 pygame.init()
 
 # Set up the display
-width, height = 800, 600
-screen = pygame.display.set_mode((width, height))
+WIDTH, HEIGHT = 800, 600
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Multiple Waving Circles with Particles")
 
 # Set up the colors
-bg_color = (42, 40, 38)
-stroke_color = (230, 230, 230)
-white = (255, 255, 255)
+BG_COLOR = (42, 40, 38)
+STROKE_COLOR = (230, 230, 230)
+WHITE = (255, 255, 255)
 
 # Set up the circle parameters
-num_circles = 5  # Number of circles
+NUM_CIRCLES = 5  # Number of circles
 N = 720  # Number of points for the circle
 R = 165
 t = 0
 
 # Set up the particle parameters
-particle_radius = 2
-particles_per_frame = 1
-max_distance = math.hypot(width // 2, height // 2)
-min_particle_speed = 0.5  # Minimum speed of particles
-max_particle_speed = 2.0  # Maximum speed of particles
+PARTICLE_RADIUS = 2
+PARTICLES_PER_FRAME = 1
+MAX_DISTANCE = math.hypot(WIDTH // 2, HEIGHT // 2)
+MIN_PARTICLE_SPEED = 0.5  # Minimum speed of particles
+MAX_PARTICLE_SPEED = 2.0  # Maximum speed of particles
 
 # Set up the invisible circle parameters
-invisible_circle_radius = R + 20
-circle_center = (width // 2, height // 2)
-circle_edge_distance_variation = 20
+INVISIBLE_CIRCLE_RADIUS = R + 20
+CIRCLE_CENTER = (WIDTH // 2, HEIGHT // 2)
+CIRCLE_EDGE_DISTANCE_VARIATION = 20
 
 particles = []
 
@@ -40,11 +40,11 @@ def create_particle():
     angle = random.uniform(0, 2 * math.pi)
     dx = math.cos(angle)
     dy = math.sin(angle)
-    distance_from_edge = random.uniform(-circle_edge_distance_variation, circle_edge_distance_variation)
-    x = circle_center[0] + (invisible_circle_radius + distance_from_edge) * dx
-    y = circle_center[1] + (invisible_circle_radius + distance_from_edge) * dy
-    particle_speed = random.uniform(min_particle_speed, max_particle_speed)
-    life = random.uniform(max_distance / 2, max_distance) / particle_speed
+    distance_from_edge = random.uniform(-CIRCLE_EDGE_DISTANCE_VARIATION, CIRCLE_EDGE_DISTANCE_VARIATION)
+    x = CIRCLE_CENTER[0] + (INVISIBLE_CIRCLE_RADIUS + distance_from_edge) * dx
+    y = CIRCLE_CENTER[1] + (INVISIBLE_CIRCLE_RADIUS + distance_from_edge) * dy
+    particle_speed = random.uniform(MIN_PARTICLE_SPEED, MAX_PARTICLE_SPEED)
+    life = random.uniform(MAX_DISTANCE / 2, MAX_DISTANCE) / particle_speed
     particles.append([x, y, dx, dy, 1.0, life, life, particle_speed])
 
 def draw_particles():
@@ -54,31 +54,24 @@ def draw_particles():
         particle[5] -= 1
         if particle[5] > 0:
             particle[4] = particle[5] / particle[6]
-            color = (white[0], white[1], white[2], int(particle[4] * 255))
-            surface = pygame.Surface((particle_radius * 2, particle_radius * 2), pygame.SRCALPHA)
-            pygame.draw.circle(surface, color, (particle_radius, particle_radius), particle_radius)
-            screen.blit(surface, (int(particle[0] - particle_radius), int(particle[1] - particle_radius)))
+            color = (*WHITE, int(particle[4] * 255))
+            surface = pygame.Surface((PARTICLE_RADIUS * 2, PARTICLE_RADIUS * 2), pygame.SRCALPHA)
+            pygame.draw.circle(surface, color, (PARTICLE_RADIUS, PARTICLE_RADIUS), PARTICLE_RADIUS)
+            screen.blit(surface, (int(particle[0] - PARTICLE_RADIUS), int(particle[1] - PARTICLE_RADIUS)))
         else:
             particles.remove(particle)
 
 def draw_circle(radius, offset_x, offset_y, color, stroke_weight, wave_amplitude, wave_frequency, wave_speed, direction):
-    points = []
-    for i in range(N):
-        th = i * 2 * math.pi / N
-        wave = math.sin(wave_frequency * th + wave_speed * t * direction) * wave_amplitude
-        r = radius * (1 + wave)
-        x = r * math.sin(th) + offset_x
-        y = -r * math.cos(th) + offset_y
-        points.append((x, y))
+    points = [(radius * math.sin(th) + offset_x, -radius * math.cos(th) + offset_y + math.sin(wave_frequency * th + wave_speed * t * direction) * wave_amplitude * radius) for th in (i * 2 * math.pi / N for i in range(N))]
     pygame.draw.lines(screen, color, True, points, stroke_weight)
 
 def draw_circles(offset_x, offset_y):
-    for i in range(num_circles):
-        wave_amplitude = 0.05  # Constant wave amplitude for each circle
-        wave_frequency = 3  # Constant wave frequency for each circle
+    wave_amplitude = 0.05  # Constant wave amplitude for each circle
+    wave_frequency = 3  # Constant wave frequency for each circle
+    for i in range(NUM_CIRCLES):
         wave_speed = 5 + i  # Varying wave speed for each circle
         direction = 1 if i % 2 == 0 else -1  # Alternate directions for each circle
-        draw_circle(R, offset_x, offset_y, stroke_color, 2, wave_amplitude, wave_frequency, wave_speed, direction)
+        draw_circle(R, offset_x, offset_y, STROKE_COLOR, 2, wave_amplitude, wave_frequency, wave_speed, direction)
 
 def main():
     global t
@@ -90,15 +83,15 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
 
-        screen.fill(bg_color)
+        screen.fill(BG_COLOR)
 
         t += 0.005
         if t > 1:
             t = 0
 
-        draw_circles(width / 2, height / 2)
+        draw_circles(WIDTH / 2, HEIGHT / 2)
 
-        for _ in range(particles_per_frame):
+        for _ in range(PARTICLES_PER_FRAME):
             create_particle()
         draw_particles()
 
