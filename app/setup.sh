@@ -53,6 +53,10 @@ it with love just for you so you can discover
 great music!
 -----------------------------------------------"
 
+# Cloning a Git repository
+echo "Cloning specified Git repository..."
+git clone https://github.com/jonathanpiette/TheMusicBox/tree/main
+
 echo "Installation completed successfully."
 echo "Please reboot the Raspberry Pi for the changes to take effect."
 
