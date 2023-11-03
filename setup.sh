@@ -7,23 +7,22 @@ set -e
 echo "Updating package list and upgrading existing packages..."
 sudo apt-get update && sudo apt-get upgrade -y
 
-# Installing Python3, Pip, and the python3-venv package if they are not already installed
-echo "Installing Python3, Pip, and python3-venv..."
-sudo apt-get install python3 python3-pip python3-venv git vsftpd mpg123 -y
-
-# Install the python3-venv to ensure the virtual environment can be created
-sudo apt-get install python3.11-venv -y
-
 # Create a Python virtual environment
 echo "Creating a Python virtual environment..."
-python3 -m venv ~/the_music_box_venv
+python3 -m venv ~/themusicbox
 
 # Activate the virtual environment
-source ~/the_music_box_venv/bin/activate
+source ~/themusicbox/bin/activate
+
+# Installing Python3 and Pip if they are not already installed
+echo "Installing Python3 and Pip..."
+sudo apt-get install python3 python3-pip git vsftpd mpg123 -y
+
+
 
 # Now use pip to install packages within the virtual environment
 echo "Installing required Python libraries in the virtual environment..."
-pip install adafruit-circuitpython-pn532 pygame RPi.GPIO pillow ST7789
+pip3 install adafruit-circuitpython-pn532 pygame RPi.GPIO pillow ST7789
 
 # Deactivate the virtual environment when done
 deactivate
@@ -68,7 +67,7 @@ great music!
 
 # Cloning a Git repository
 echo "Cloning specified Git repository..."
-git clone https://github.com/jonathanpiette/TheMusicBox/tree/main/app
+git clone https://github.com/jonathanpiette/TheMusicBox/tree/main
 
 echo "Installation completed successfully."
 echo "Please reboot the Raspberry Pi for the changes to take effect."
