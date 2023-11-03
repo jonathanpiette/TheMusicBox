@@ -11,9 +11,19 @@ sudo apt-get update && sudo apt-get upgrade -y
 echo "Installing Python3 and Pip..."
 sudo apt-get install python3 python3-pip git vsftpd mpg123 -y
 
-# Installing Python packages
-echo "Installing required Python libraries..."
+# Create a Python virtual environment
+echo "Creating a Python virtual environment..."
+python3 -m venv ~/my_project_venv
+
+# Activate the virtual environment
+source ~/themusicbox/bin/activate
+
+# Now use pip to install packages within the virtual environment
+echo "Installing required Python libraries in the virtual environment..."
 pip3 install adafruit-circuitpython-pn532 pygame RPi.GPIO pillow ST7789
+
+# Deactivate the virtual environment when done
+deactivate
 
 # Enable SPI and I2C interface
 echo "Enabling SPI and I2C interfaces..."
