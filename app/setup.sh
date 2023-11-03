@@ -7,12 +7,19 @@ set -e
 echo "Updating package list and upgrading existing packages..."
 sudo apt-get update && sudo apt-get upgrade -y
 
-# Installing Python3, Pip, and the python3-venv package if they are not already installed
-echo "Installing Python3, Pip, and python3-venv..."
-sudo apt-get install python3 python3-pip python3-venv git vsftpd mpg123 -y
+# Installing Python3, Pip, and the required packages
+echo "Installing Python3, Pip, and other necessary packages..."
+sudo apt-get install -y python3 python3-pip git vsftpd mpg123
 
-# Install the python3-venv to ensure the virtual environment can be created
-sudo apt-get install python3.11-venv -y
+# Install the python3-venv package to ensure the virtual environment can be created
+# We will attempt to install the specific version first, if available
+echo "Installing python3-venv..."
+if sudo apt-get install -y python3.11-venv; then
+    echo "Installed python3.11-venv successfully."
+else
+    # If the specific version is not available, install the generic package
+    sudo apt-get install -y python3-venv
+fi
 
 # Create a Python virtual environment
 echo "Creating a Python virtual environment..."
@@ -50,7 +57,7 @@ echo "Installing Pisugar Battery Management Software..."
 curl http://cdn.pisugar.com/release/pisugar-power-manager.sh | sudo bash
 
 # Additional setup could be included here, such as adding the user to the SPI and GPIO groups
-echo "Adding user to 'spi' and 'gpio' groups..."
+echo "Adding user to 'spi', 'gpio', and 'i2c' groups..."
 sudo usermod -a -G spi,gpio,i2c $(whoami)
 
 # Define the MOTD content
@@ -66,9 +73,11 @@ it with love just for you so you can discover
 great music!
 -----------------------------------------------"
 
-# Cloning a Git repository
+# Apply the MOTD content here if required...
+
+# Cloning a Git repository (the URL needs to be the clone URL, not the tree view)
 echo "Cloning specified Git repository..."
-git clone https://github.com/jonathanpiette/TheMusicBox/tree/main/app
+git clone https://github.com/jonathanpiette/TheMusicBox.git
 
 echo "Installation completed successfully."
 echo "Please reboot the Raspberry Pi for the changes to take effect."
